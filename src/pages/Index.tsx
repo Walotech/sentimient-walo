@@ -2,56 +2,69 @@ import { useState } from "react";
 import SentimentHeader from "@/components/SentimentHeader";
 import SentimentForm from "@/components/SentimentForm";
 import SentimentResult, { SentimentType } from "@/components/SentimentResult";
+import { toast } from "sonner";
 
 interface AnalysisResult {
   sentiment: SentimentType;
   confidence: number;
 }
 
+interface ApiResponse {
+  success: boolean;
+  data: {
+    prevision: "Positivo" | "Negativo" | "Neutral";
+    probabilidad: number;
+  };
+  message: string;
+}
+
+const mapPrevisionToSentiment = (prevision: string): SentimentType => {
+  switch (prevision.toLowerCase()) {
+    case "positivo":
+      return "positive";
+    case "negativo":
+      return "negative";
+    default:
+      return "neutral";
+  }
+};
+
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  // Simulated sentiment analysis (will be replaced with real ML backend)
-  const analyzeSentiment = (text: string) => {
+  const analyzeSentiment = async (text: string) => {
     setIsLoading(true);
     
-    // Simulate API call delay
-    setTimeout(() => {
-      // Simple mock analysis based on keywords
-      const lowerText = text.toLowerCase();
-      
-      const positiveWords = ["feliz", "amor", "excelente", "genial", "maravilloso", "increíble", "bueno", "mejor", "alegría", "gracias", "perfecto", "fantástico", "hermoso", "great", "good", "happy", "love", "excellent", "amazing"];
-      const negativeWords = ["triste", "odio", "terrible", "malo", "peor", "horrible", "fatal", "desastre", "miedo", "dolor", "angustia", "sad", "bad", "hate", "terrible", "awful", "angry", "disappointed"];
-      
-      let positiveScore = 0;
-      let negativeScore = 0;
-      
-      positiveWords.forEach(word => {
-        if (lowerText.includes(word)) positiveScore++;
+    try {
+      const response = await fetch("https://sentiment-tech-api.onrender.com/api/v1/sentiment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
       });
-      
-      negativeWords.forEach(word => {
-        if (lowerText.includes(word)) negativeScore++;
-      });
-      
-      let sentiment: SentimentType;
-      let confidence: number;
-      
-      if (positiveScore > negativeScore) {
-        sentiment = "positive";
-        confidence = Math.min(95, 60 + positiveScore * 10);
-      } else if (negativeScore > positiveScore) {
-        sentiment = "negative";
-        confidence = Math.min(95, 60 + negativeScore * 10);
-      } else {
-        sentiment = "neutral";
-        confidence = Math.min(90, 50 + Math.random() * 30);
+
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
       }
-      
-      setResult({ sentiment, confidence: Math.round(confidence) });
+
+      const data: ApiResponse = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Error al analizar el sentimiento");
+      }
+
+      const sentiment = mapPrevisionToSentiment(data.data.prevision);
+      const confidence = Math.round(data.data.probabilidad * 100);
+
+      setResult({ sentiment, confidence });
+    } catch (error) {
+      console.error("Error analyzing sentiment:", error);
+      toast.error("No se pudo analizar el texto. Por favor, intenta de nuevo.");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleReset = () => {
