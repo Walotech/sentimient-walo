@@ -13,7 +13,7 @@ const SentimentHeader = () => {
           className="text-3xl md:text-5xl font-extrabold text-primary-foreground mb-4 animate-fade-in"
           style={{ animationDelay: "0.1s" }}
         >
-          Análisis de Sentimiento ML
+          Análisis de Sentimiento ML 
         </h1>
         <p 
           className="text-lg md:text-xl text-primary-foreground/90 font-medium animate-fade-in"
