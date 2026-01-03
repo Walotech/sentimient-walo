@@ -47,7 +47,7 @@ const SentimentResult = ({ sentiment, confidence, text, onReset }: SentimentResu
       <div className="flex flex-col items-center text-center space-y-6">
 
       <p 
-          className="text-muted-foreground text-base md:text-lg animate-fade-in"
+          className="${config.gradientClass} text-base md:text-lg animate-fade-in"
           style={{ animationDelay: "0.3s" }}
         >
           {text}
