@@ -39,12 +39,20 @@ const sentimentConfig = {
   },
 };
 
-const SentimentResult = ({ sentiment, confidence, onReset }: SentimentResultProps) => {
+const SentimentResult = ({ sentiment, confidence, text, onReset }: SentimentResultProps) => {
   const config = sentimentConfig[sentiment];
 
   return (
     <Card className="w-full p-8 md:p-12 bg-card shadow-card border-0 rounded-2xl animate-scale-in">
       <div className="flex flex-col items-center text-center space-y-6">
+
+      <p 
+          className="text-muted-foreground text-base md:text-lg animate-fade-in"
+          style={{ animationDelay: "0.3s" }}
+        >
+          {text}
+        </p>
+        
         {/* Emoji */}
         <div 
           className="text-7xl md:text-8xl animate-bounce-in"
