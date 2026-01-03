@@ -7,6 +7,7 @@ import { toast } from "sonner";
 interface AnalysisResult {
   sentiment: SentimentType;
   confidence: number;
+  text: string;
 }
 
 interface ApiResponse {
@@ -58,7 +59,7 @@ const Index = () => {
       const sentiment = mapPrevisionToSentiment(data.data.prevision);
       const confidence = Math.round(data.data.probabilidad * 100);
 
-      setResult({ sentiment, confidence });
+      setResult({ sentiment, confidence, text });
     } catch (error) {
       console.error("Error analyzing sentiment:", error);
       toast.error("No se pudo analizar el texto. Por favor, intenta de nuevo.");
@@ -86,6 +87,7 @@ const Index = () => {
             <SentimentResult
               sentiment={result.sentiment}
               confidence={result.confidence}
+              text={result.text}
               onReset={handleReset}
             />
           ) : (
