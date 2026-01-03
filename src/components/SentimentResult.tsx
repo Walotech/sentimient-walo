@@ -9,6 +9,7 @@ export type SentimentType = "positive" | "negative" | "neutral";
 interface SentimentResultProps {
   sentiment: SentimentType;
   confidence: number;
+  text: string;
   onReset: () => void;
 }
 
@@ -20,6 +21,7 @@ const sentimentConfig = {
     badgeClass: "bg-positive text-positive-foreground",
     progressClass: "bg-positive",
     gradientClass: "gradient-positive",
+    textClass: "text-positive",
   },
   negative: {
     emoji: "😞",
@@ -28,6 +30,7 @@ const sentimentConfig = {
     badgeClass: "bg-negative text-negative-foreground",
     progressClass: "bg-negative",
     gradientClass: "gradient-negative",
+    textClass: "text-negative",
   },
   neutral: {
     emoji: "😐",
@@ -36,6 +39,7 @@ const sentimentConfig = {
     badgeClass: "bg-neutral text-neutral-foreground",
     progressClass: "bg-neutral",
     gradientClass: "gradient-neutral",
+    textClass: "text-neutral",
   },
 };
 
@@ -45,12 +49,12 @@ const SentimentResult = ({ sentiment, confidence, text, onReset }: SentimentResu
   return (
     <Card className="w-full p-8 md:p-12 bg-card shadow-card border-0 rounded-2xl animate-scale-in">
       <div className="flex flex-col items-center text-center space-y-6">
-
-      <p 
-          className="text-primary-foreground text-base md:text-lg animate-fade-in"
+        {/* Feedback Text */}
+        <p 
+          className={`${config.textClass} font-semibold text-base md:text-lg animate-fade-in`}
           style={{ animationDelay: "0.3s" }}
         >
-          {text}
+          '{text}'
         </p>
         
         {/* Emoji */}
